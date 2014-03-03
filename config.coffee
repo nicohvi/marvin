@@ -1,5 +1,5 @@
 exports.config = {
-  server: 'irc.freenode.net',
-  nick: 'marvin',
-  channels: ['#nplol']
+  server: 'leguin.freenode.net',
+  nick: 'nplol-bot-marvin',
+  options: { channels: ['#nplol'], debug: true}
 }
