@@ -1,1 +1,1 @@
-app: coffee marvin.coffee
+web: coffee marvin.coffee
