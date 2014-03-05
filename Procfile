@@ -1,1 +1,1 @@
-web: coffee marvin.coffee
+bot: coffee marvin.coffee
