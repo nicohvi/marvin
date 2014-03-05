@@ -11,4 +11,4 @@ client.addListener 'netError', (error) ->
 
 client.addListener 'message', (from, to, message) ->
 	client.say('#nplol', 'Shut up, Jørgen.') if from == 'skovly'
-	client.say('#nplol', "I'm not your friend, guy") if to == 'nplol-bot-marvin'
+	client.say('#nplol', "I'm not your friend, guy") if ~message.indexOf 'hello'
