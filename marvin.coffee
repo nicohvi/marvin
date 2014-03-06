@@ -1,11 +1,9 @@
 irc = require 'irc'
 config = require('./config').config
+cronJob = require('cron').CronJob
 
 client = new irc.Client(config.server, config.nick, config.options)
 config.init()
-
-client.addListener 'registered', (message) ->
-	client.join('#mplol')
 
 client.addListener 'netError', (error) ->
   console.log('netError: ' + error)
@@ -26,3 +24,9 @@ retardedEmitter = ->
 
 greetingEmitter = (greeter) ->
 	client.say('#nplol', "Hello, #{greeter} - you smell exceptionally well today.")
+
+
+# cron job to post /me claps every day at 13:37
+job = new CronJob('00 37 13 * * 1-7', ->
+						client.say('#nplol', '/me claps'), null, true, 'Norway/Oslo')
+);
