@@ -1,6 +1,7 @@
 irc = require 'irc'
 config = require('./config').config
 cronJob = require('cron').CronJob
+http = require ('http')
 
 client = new irc.Client(config.server, config.nick, config.options)
 config.init()
@@ -29,4 +30,7 @@ greetingEmitter = (greeter) ->
 # cron job to post /me claps every day at 13:37
 job = new CronJob('00 37 13 * * 1-7', ->
 						client.say('#nplol', '/me claps'), null, true, 'Norway/Oslo')
-);
+
+
+# dummy web server due to Nodejitsu config.
+ http.createServer().listen(8080)
