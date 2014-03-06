@@ -19,7 +19,7 @@ messageParser = (from, to, message) ->
 	greetingEmitter(from) if message.contains "hello #{config.nick}"
 
 skovlyEmitter = ->
-	client.say('#nplol', 'Shut up, Jørgen - no one likes you.') if from == 'skovly'
+	client.say('#nplol', 'Shut up, Jørgen - no one likes you.')
 
 retardedEmitter = ->
 	client.say('#nplol', "HE'S JAPANEEEEEESE")
