@@ -32,8 +32,7 @@ clap = ->
 	client.say('#nplol', '/me claps')
 
 # cron job to post /me claps every day at 13:37
-job = new cronJob('00 36 16 * * 1-7', clap, null, true, 'Norway/Oslo')
-
+job = new cronJob('00 37 13 * * *', clap, null, true)
 
 # dummy web server due to Nodejitsu config.
 http.createServer().listen(8080)
