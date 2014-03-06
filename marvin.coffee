@@ -5,7 +5,7 @@ client = new irc.Client(config.server, config.nick, config.options)
 config.init()
 
 client.addListener 'registered', (message) ->
-	client.join('#nplol')
+	client.join('#mplol')
 
 client.addListener 'netError', (error) ->
   console.log('netError: ' + error)
@@ -14,9 +14,9 @@ client.addListener 'message', (from, to, message) ->
 	messageParser(from, to, message)
 
 messageParser = (from, to, message) ->
-	skovlyEmitter if from == 'skovly'
-	retardedEmitter if message.contains "There's a retarded fellow on the bus"
-	greetingEmitter(from) if message.contains? config.nick
+	skovlyEmitter() if from == 'skovly'
+	retardedEmitter() if message.contains "there's a retarded fellow on the bus"
+	greetingEmitter(from) if message.contains "hello #{config.nick}"
 
 skovlyEmitter = ->
 	client.say('#nplol', 'Shut up, Jørgen - no one likes you.') if from == 'skovly'
