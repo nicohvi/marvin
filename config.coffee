@@ -3,3 +3,7 @@ exports.config = {
   nick: 'nplol-bot-marvin',
   options: { channels: ['#nplol'], debug: true}
 }
+
+exports.init = ->
+  String::contains = (substring) ->
+    ~@.toLowerCase().indexOf substring
