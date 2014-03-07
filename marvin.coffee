@@ -5,6 +5,11 @@ http = require ('http')
 time = require('time')
 date = new time.Date()
 
+leet_messages = [ "There's a bunny on my pancake.", "What came first - the cat or the internet?",
+                  "If dogs could talk, would you listen? They'd probably not have anything interesting to say.",
+                  "Potatoes do not make for very interesting conversation partners, though I don't blame them."
+                ]
+
 client = new irc.Client(config.server, config.nick, config.options)
 config.init()
 
@@ -29,7 +34,8 @@ greetingEmitter = (greeter) ->
 	client.say('#nplol', "Hello, #{greeter} - you smell exceptionally well today.")
 
 clap = ->
-	client.say('#nplol', '/me claps')
+  message = leet_messages[Math.floor(Math.random() * leet_messages.length)]
+  client.say('#nplol', message)
 
 # cron job to post /me claps every day at 13:37
 job = new cronJob('00 37 13 * * *', clap, null, true)
