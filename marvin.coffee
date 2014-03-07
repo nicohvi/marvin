@@ -33,12 +33,12 @@ retardedEmitter = ->
 greetingEmitter = (greeter) ->
 	client.say('#nplol', "Hello, #{greeter} - you smell exceptionally well today.")
 
-clap = ->
+leet_action = ->
   message = leet_messages[Math.floor(Math.random() * leet_messages.length)]
   client.say('#nplol', message)
 
-# cron job to post /me claps every day at 13:37
-job = new cronJob('00 37 13 * * *', clap, null, true)
+# cron job to post an interesting message very day at 13:37
+job = new cronJob('00 37 13 * * *', leet_action, null, true)
 
 # dummy web server due to Nodejitsu config.
 http.createServer().listen(8080)
