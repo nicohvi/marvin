@@ -38,7 +38,8 @@ leet_action = ->
   client.say('#nplol', message)
 
 # cron job to post an interesting message very day at 13:37
-job = new cronJob('00 37 13 * * *', leet_action, null, true)
+# time zones are a hassle, so just a quick fix is to set the time to UTC.
+job = new cronJob('00 37 12 * * *', leet_action, null, true)
 
 # dummy web server due to Nodejitsu config.
 http.createServer().listen(8080)
