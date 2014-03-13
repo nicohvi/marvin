@@ -38,7 +38,7 @@ leet_action = ->
   client.say('#nplol', message)
 
 # cron job to post an interesting message very day at 13:37
-job = new cronJob('00 52 13 * * *', leet_action, null, true, 'Europe/Amsterdam')
+job = new cronJob('00 37 13 * * *', leet_action, null, true, 'Europe/Amsterdam')
 
 # dummy web server due to Nodejitsu config.
 http.createServer().listen(8080)
