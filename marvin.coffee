@@ -10,8 +10,8 @@ leet_messages = [ "There's a bunny on my pancake.",
                   "If dogs could talk, would you listen? They'd probably not have anything interesting to say.",
                   "Potatoes do not make for very interesting conversation partners, though I don't blame them.",
                 ]
- jokes = [ "I heard Jørgen can bench press at least 50 pounds",
-           "Can Japanese people survive without rice?",
+jokes = [ "I heard Jørgen can bench press at least 50 pounds",
+          "Can Japanese people survive without rice?",
           "What's shorter than 1m 50cm and has the personality of a lobster?"]
 
 client = new irc.Client(config.server, config.nick, config.options)
