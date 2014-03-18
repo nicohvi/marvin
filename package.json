@@ -1,6 +1,6 @@
 {
   "name": "marvin",
-  "version": "0.0.1-9",
+  "version": "0.0.1-11",
   "dependencies": {
     "coffee-script": "1.6.3",
     "irc": "0.3.6",
