@@ -26,7 +26,7 @@ client.addListener 'message', (from, to, message) ->
 messageParser = (from, to, message) ->
 	retardedEmitter() if message.contains "there's a retarded fellow on the bus"
 	greetingEmitter(from) if message.contains "hello #{config.nick}"
-  tellJoke() if message.contains "go #{config.nick}!"
+  tellJoke() if message.contains "tell me a joke #{config.nick}"
 
 retardedEmitter = ->
 	client.say('#nplol', "HE'S JAPANEEEEEESE")
