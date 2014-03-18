@@ -42,7 +42,7 @@ tellJoke = ->
   joke = jokes[Math.floor(Math.random() * jokes.length)]
   client.say('#nplol', joke)
 
-  callback = -> client.say('#derp', 'Wow, what a terrific audience')
+  callback = -> client.say('#nplol', 'Wow, what a terrific audience')
   setTimeout(callback, 5000) if random > 6
 
 # cron job to post an interesting message very day at 13:37
