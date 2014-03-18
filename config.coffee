@@ -1,7 +1,7 @@
 exports.config = {
   server: 'leguin.freenode.net',
-  nick: 'nplol-marvin2',
-  options: { channels: ['#derp'], debug: true},
+  nick: 'nplol-bot-marvin',
+  options: { channels: ['#nplol'], debug: true},
   init: ->
     String::contains = (substring) ->
       console.log substring

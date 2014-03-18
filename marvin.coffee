@@ -29,7 +29,7 @@ retardedEmitter = ->
 	client.say('#nplol', "HE'S JAPANEEEEEESE")
 
 greetingEmitter = (greeter) ->
-	client.say('#derp', "Hello, #{greeter} - you smell exceptionally well today.")
+	client.say('#nplol', "Hello, #{greeter} - you smell exceptionally well today.")
 
 leet_action = ->
   message = leet_messages[Math.floor(Math.random() * leet_messages.length)]
@@ -38,9 +38,9 @@ leet_action = ->
 tellJoke = ->
   random = Math.floor(Math.random() * 10)
 
-  client.say('#derp', 'Okay, try this on for size.') if random > 6
+  client.say('#nplol', 'Okay, try this on for size.') if random > 6
   joke = jokes[Math.floor(Math.random() * jokes.length)]
-  client.say('#derp', joke)
+  client.say('#nplol', joke)
 
   callback = -> client.say('#derp', 'Wow, what a terrific audience')
   setTimeout(callback, 5000) if random > 6
