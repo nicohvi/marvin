@@ -70,7 +70,7 @@ messageParser = (from, to, message) ->
     when message.contains "there's a retarded fellow on the bus" then retardedEmitter()
     when message.contains "hello #{config.nick}" then greetingEmitter(from)
     when message.contains "tell me a joke #{config.nick}" then tellJoke()
-    when from == 'skovly' botFilter(message)
+    when from == 'skovly' then botFilter(message)
     else # do nothing
 
 
