@@ -56,7 +56,6 @@ botFilter = (message) ->
   return false unless message.split(' ').length == 1
 
   # obviously a bot statement
-  random = Math.floor(Math.random() * 10)
   client.say('#nplol', 'Damn you, skovly - I am the only robot allowed in this channel!')
   client.say('#nplol', 'I challenge you to a duel, you may choose whatever weapon you desire. I choose insults.')
   insult = insults[Math.floor(Math.random() * insults.length)]
