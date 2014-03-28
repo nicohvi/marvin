@@ -7,4 +7,6 @@ exports.config = {
       console.log substring
       console.log @.toLowerCase().indexOf(substring) > -1
       @.toLowerCase().indexOf(substring) > -1
+    String::isAllCaps = ->
+      @.toUpperCase() == @
 }
