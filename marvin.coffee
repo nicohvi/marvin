@@ -17,10 +17,11 @@ jokes = [ "I heard Jørgen can bench press at least 50 pounds.",
           "Have you ever considered the possibility that Bent's beard is just the result of him embracing his advanced age?"
         ]
 
-insults = [ "You smell terrible",
-            "Your recent time sheets indicate you're only working 60 hours a week - pathetic",
-            "My sensors indicate that your suit is of poor quality, and all your coworkers are totally aware of it",
-            "Nobody likes you. I'm kidding of course, I've heard great things about you from your close friend Nikolas Jansen"
+insults = [ "You smell terrible.",
+            "Your recent time sheets indicate you're only working 60 hours a week - pathetic.",
+            "My sensors indicate that your suit is of poor quality, and all your coworkers are totally aware of it.",
+            "Nobody likes you. I'm kidding of course, I've heard great things about you from your close friend Nikolas Jansen.",
+            "I overheard your co-workers talking about you, and the conversation indicated they were none too pleased with regards to your skills in the Office Suite."
           ]
 
 client = new irc.Client(config.server, config.nick, config.options)
