@@ -55,6 +55,8 @@ tellJoke = ->
 botFilter = (message) ->
   return false unless message.split(' ').length == 1
   return false if message.contains ":"
+  return false if message.contains "haha"
+  return false if message.contains "lol"
 
   # obviously a bot statement
   client.say('#nplol', 'Damn you, skovly - I am the only robot allowed in this channel!')
