@@ -1,6 +1,6 @@
 exports.config = {
   server: 'leguin.freenode.net',
-  nick: 'nplol-bot-marvin',
+  nick: 'beta-marvin',
   options: { channels: ['#nplol'], debug: true},
   init: ->
     String::contains = (substring) ->

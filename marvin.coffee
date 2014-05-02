@@ -33,6 +33,10 @@ client.addListener 'netError', (error) ->
 client.addListener 'message', (from, to, message) ->
 	messageParser(from, to, message)
 
+client.addListener 'join', (channel, nick, message) ->
+  console.log "ch: #{channel}, nick: #{nick}, message: #{message}"
+  greetingParser(channel, nick)
+
 retardedEmitter = ->
 	client.say('#nplol', "HE'S JAPANEEEEEESE")
 
@@ -75,6 +79,18 @@ messageParser = (from, to, message) ->
     when from == 'skovly' then botFilter(message)
     else # do nothing
 
+greetingParser = (channel, nick) ->
+  switch
+    when nick.contains 'monark' then greeting = "Why hello, person of royal descent. You are looking quite regal today - also, have you been snaking lately?"
+    when nick.contains 'kengr' then greeting = "Herro fine person of asian origin. Have you remembered to do your daily math exercises this morning?"
+    when nick.contains 'severin' then greeting = 'A good day to you, Mr. Baxxter - have you produced any new, ground-breaking music?'
+    when nick.contains 'kentrobin' then greeting = 'Still alive and well, are we #{nick}? Impressive, considering your advancing years!'
+    when nick.contains 'howie' then greeting = 'A good day to you, Mr. White - Have you seen Lil\' Wayne around?'
+    when nick.contains 'femton' then gretting = 'A there he is - Good morning to you, Master Lil\' Wayne'
+    when nick.contains 'retardedbear' then greeting = "My nigga, #{nick}."
+    else greeting = ""
+
+  client.say(channel, greeting) if greeting.length > 0
 
 # dummy web server due to Nodejitsu config.
 http.createServer().listen(8080)
