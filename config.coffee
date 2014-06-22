@@ -9,4 +9,6 @@ exports.config = {
       @.toLowerCase().indexOf(substring) > -1
     String::isAllCaps = ->
       @.toUpperCase() == @
+    Array::max = ->
+      Math.max.apply(null, @)
 }

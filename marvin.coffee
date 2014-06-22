@@ -1,96 +1,107 @@
-irc = require 'irc'
-config = require('./config').config
-cronJob = require('cron').CronJob
-http = require ('http')
-time = require('time')
-date = new time.Date()
+util = require 'util'
+BlackJack = require './lib/blackjack'
 
-leet_messages = [ "There's a bunny on my pancake.",
-                  "What came first - the cat or the internet?",
-                  "If dogs could talk, would you listen? They'd probably not have anything interesting to say.",
-                  "Potatoes do not make for very interesting conversation partners, though I don't blame them."
-                ]
-# each one more hilarious than the last
-jokes = [ "I heard Jørgen can bench press at least 50 pounds.",
-          "Can Japanese people survive without rice?",
-          "What's shorter than 1m 50cm and has the personality of a lobster?",
-          "Have you ever considered the possibility that Bent's beard is just the result of him embracing his advanced age?"
-        ]
+class Marvin
 
-insults = [ "You smell terrible.",
-            "Your recent time sheets indicate you're only working 60 hours a week - pathetic.",
-            "My sensors indicate that your suit is of poor quality, and all your coworkers are totally aware of it.",
-            "Nobody likes you. I'm kidding of course, I've heard great things about you from your close friend Nikolas Jansen.",
-            "I overheard your co-workers talking about you, and the conversation indicated they were none too pleased with regards to your skills in the Office Suite."
-          ]
+  constructor: (@nick) ->
+    @game = new BlackJack()
+    @game.addPlayer('marvin')
+    @game.addPlayer('arthur')
+    @game.addPlayer('trillian')
+    @game.addPlayer('zaphod')
+    @game.addPlayer('femton')
+    @game.addPlayer('sevve')
 
-client = new irc.Client(config.server, config.nick, config.options)
-config.init()
+    @game.start()
+    while @game.state == 'ongoing'
+      for player in @game.players
+        if player.score >= 10
+          @game.stand(player.name)
+        else
+          @game.deal(player.name)
+      @game.step()
+    console.log "Game over, #{util.inspect(@game.players)}"
 
-client.addListener 'netError', (error) ->
-  console.log('netError: ' + error)
+    @leet_messages =
+      [
+        'There\'s a bunny on my pancake.',
+        'What came first - the cat or the internet?',
+        'If dogs could talk, would you listen? They\'d probably not have
+        anything interesting to say.',
+        'Potatoes do not make for very interesting conversation partners,
+        though I don\'t blame them.'
+      ]
 
-client.addListener 'message', (from, to, message) ->
-	messageParser(from, to, message)
+    @jokes =
+      [
+        'I heard Jørgen can bench press at least 50 pounds.',
+        'Can Japanese people survive without rice?',
+        'What\'s shorter than 1m 50cm and has the personality of a lobster?',
+        'Have you ever considered the possibility that Bent\'s beard is just the result of him embracing his advanced age?'
+      ]
 
-client.addListener 'join', (channel, nick, message) ->
-  console.log "ch: #{channel}, nick: #{nick}, message: #{message}"
-  greetingParser(channel, nick)
+    @insults =
+      [
+        'Your recent time sheets indicate you\'re only working
+        60 hours a week - pathetic.',
+        'My sensors indicate that your suit is of poor quality,
+        and all your coworkers are totally aware of it.',
+        'Nobody likes you. I\'m kidding of course, I\'ve heard great
+        things about you from your close friend Nikolas Jansen.',
+        'I overheard your co-workers talking about you, and the conversation
+        indicated they were none too pleased with regards to your
+        skills in the Office Suite.'
+      ]
 
-retardedEmitter = ->
-	client.say('#nplol', "HE'S JAPANEEEEEESE")
+  blackjackParser: (player, message) ->
+    switch
+      when message == 'join'
+        @_joinGame(player)
+      when message == 'start'
+        @_startGame()
+      when message == 'hit'
+        @_dealCard(player)
 
-greetingEmitter = (greeter) ->
-	client.say('#nplol', "Hello, #{greeter} - you smell exceptionally well today.")
+  _joinGame: (player) ->
+    @game.addPlayer(player)
 
-leet_action = ->
-  message = leet_messages[Math.floor(Math.random() * leet_messages.length)]
-  client.say('#nplol', message)
+  _startGame: ->
+    return 'Sorry brah, a game is already in progress.' unless @game.state == 'idle'?
+    @game.start()
 
-tellJoke = ->
-  random = Math.floor(Math.random() * 10)
+  _dealCard: (player) ->
+    return 'Sorry brah, gotta start a new game first.' unless @game?
+    result = @game.deal()
+    @game.step()
+    "You got a #{result.card.stringify()}, bitch. Your score is now #{result.score}"
 
-  client.say('#nplol', 'Okay, try this on for size.') if random > 6
-  joke = jokes[Math.floor(Math.random() * jokes.length)]
-  client.say('#nplol', joke)
+  messageParser: (from, to, message) ->
+    switch
+      when message.contains "there's a retarded fellow on the bus" then @_retardedEmitter()
+      when message.contains "hello #{@nick}" then @greetingParser(from)
+      when message.contains "tell me a joke #{@nick}" then @_tellJoke()
+      else # do nothing
 
-  callback = -> client.say('#nplol', 'Wow, what a terrific audience')
-  setTimeout(callback, 5000) if random > 6
+  greetingParser: (greeter) ->
+    switch
+      when greeter.contains 'monark' then greeting = "Why hello, person of royal descent. You are looking quite regal today - also, have you been snaking lately?"
+      when greeter.contains 'kengr' then greeting = "Herro fine person of asian origin. Have you remembered to do your daily math exercises this morning?"
+      when greeter.contains 'severin' then greeting = 'A good day to you, Mr. Baxxter - have you produced any new, ground-breaking music?'
+      when greeter.contains 'kentrobin' then greeting = "Still alive and well, are we #{greeter}? Impressive, considering your advancing years!"
+      when greeter.contains 'howie' then greeting = 'A good day to you, Mr. White - Have you seen Lil\' Wayne around?'
+      when greeter.contains 'femton' then gretting = 'A there he is - Good morning to you, Master Lil\' Wayne'
+      when greeter.contains 'retardedbear' then greeting = "My nigga, #{greeter}."
+      else greeting = "Who the hell are you?"
 
-botFilter = (message) ->
-  return false unless message.split(' ').length == 1
-  return false unless message.isAllCaps()
+  leet_action: ->
+    @leet_messages[Math.floor(Math.random() * @leet_messages.length)]
 
-  # obviously a bot statement
-  client.say('#nplol', 'Damn you, skovly - I am the only robot allowed in this channel!')
-  client.say('#nplol', 'I challenge you to a duel, you may choose whatever weapon you desire. I choose insults.')
-  insult = insults[Math.floor(Math.random() * insults.length)]
-  client.say('#nplol', insult)
+  _retardedEmitter: ->
+    'HE\'S JAPANEEEEEESE'
 
-# cron job to post an interesting message very day at 13:37
-job = new cronJob('00 37 13 * * *', leet_action, null, true, 'Europe/Amsterdam')
 
-# message routing
-messageParser = (from, to, message) ->
-  switch
-    when message.contains "there's a retarded fellow on the bus" then retardedEmitter()
-    when message.contains "hello #{config.nick}" then greetingEmitter(from)
-    when message.contains "tell me a joke #{config.nick}" then tellJoke()
-    when from == 'skovly' then botFilter(message)
-    else # do nothing
+  _tellJoke: ->
+    @jokes[Math.floor(Math.random() * @jokes.length)]
 
-greetingParser = (channel, nick) ->
-  switch
-    when nick.contains 'monark' then greeting = "Why hello, person of royal descent. You are looking quite regal today - also, have you been snaking lately?"
-    when nick.contains 'kengr' then greeting = "Herro fine person of asian origin. Have you remembered to do your daily math exercises this morning?"
-    when nick.contains 'severin' then greeting = 'A good day to you, Mr. Baxxter - have you produced any new, ground-breaking music?'
-    when nick.contains 'kentrobin' then greeting = "Still alive and well, are we #{nick}? Impressive, considering your advancing years!"
-    when nick.contains 'howie' then greeting = 'A good day to you, Mr. White - Have you seen Lil\' Wayne around?'
-    when nick.contains 'femton' then gretting = 'A there he is - Good morning to you, Master Lil\' Wayne'
-    when nick.contains 'retardedbear' then greeting = "My nigga, #{nick}."
-    else greeting = ""
 
-  client.say(channel, greeting) if greeting.length > 0
-
-# dummy web server due to Nodejitsu config.
-http.createServer().listen(8080)
+module.exports = Marvin
