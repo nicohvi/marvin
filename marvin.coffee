@@ -4,23 +4,6 @@ BlackJack = require './lib/blackjack'
 class Marvin
 
   constructor: (@nick) ->
-    @game = new BlackJack()
-    @game.addPlayer('marvin')
-    @game.addPlayer('arthur')
-    @game.addPlayer('trillian')
-    @game.addPlayer('zaphod')
-    @game.addPlayer('femton')
-    @game.addPlayer('sevve')
-
-    @game.start()
-    while @game.state == 'ongoing'
-      for player in @game.players
-        if player.score >= 10
-          @game.stand(player.name)
-        else
-          @game.deal(player.name)
-      @game.step()
-    console.log "Game over, #{util.inspect(@game.players)}"
 
     @leet_messages =
       [
@@ -34,7 +17,6 @@ class Marvin
 
     @jokes =
       [
-        'I heard Jørgen can bench press at least 50 pounds.',
         'Can Japanese people survive without rice?',
         'What\'s shorter than 1m 50cm and has the personality of a lobster?',
         'Have you ever considered the possibility that Bent\'s beard is just the result of him embracing his advanced age?'
@@ -53,33 +35,12 @@ class Marvin
         skills in the Office Suite.'
       ]
 
-  blackjackParser: (player, message) ->
-    switch
-      when message == 'join'
-        @_joinGame(player)
-      when message == 'start'
-        @_startGame()
-      when message == 'hit'
-        @_dealCard(player)
-
-  _joinGame: (player) ->
-    @game.addPlayer(player)
-
-  _startGame: ->
-    return 'Sorry brah, a game is already in progress.' unless @game.state == 'idle'?
-    @game.start()
-
-  _dealCard: (player) ->
-    return 'Sorry brah, gotta start a new game first.' unless @game?
-    result = @game.deal()
-    @game.step()
-    "You got a #{result.card.stringify()}, bitch. Your score is now #{result.score}"
-
   messageParser: (from, to, message) ->
     switch
       when message.contains "there's a retarded fellow on the bus" then @_retardedEmitter()
       when message.contains "hello #{@nick}" then @greetingParser(from)
       when message.contains "tell me a joke #{@nick}" then @_tellJoke()
+      when message.contains 'bj:' then @_blackjackParser(from, message.trim())
       else # do nothing
 
   greetingParser: (greeter) ->
@@ -91,14 +52,95 @@ class Marvin
       when greeter.contains 'howie' then greeting = 'A good day to you, Mr. White - Have you seen Lil\' Wayne around?'
       when greeter.contains 'femton' then gretting = 'A there he is - Good morning to you, Master Lil\' Wayne'
       when greeter.contains 'retardedbear' then greeting = "My nigga, #{greeter}."
+      when greeter.contains @nick then greeting = 'Oh, hello self.'
       else greeting = "Who the hell are you?"
 
   leet_action: ->
     @leet_messages[Math.floor(Math.random() * @leet_messages.length)]
 
+  _blackjackParser: (player, message) ->
+    # message pattern: bj:<command>
+    command = message.slice(3)
+    console.log command
+    switch
+      when command == 'new'
+        @_newGame(player)
+      when command == 'join'
+        @_joinGame(player)
+      when command == 'start'
+        @_startGame()
+      when command == 'hit'
+        @_dealCard(player)
+      when command == 'stand'
+        @_stand(player)
+
+  _newGame: (name) ->
+    if @game?
+      if @game.state == 'idle'
+        @game.restart()
+        "A new game has been started by #{name}"
+      else
+        @_inProgress()
+    else
+      @game = new BlackJack()
+      "A new game has been started by #{name}"
+
+  _inProgress: ->
+    'Sorry brah, a game is already in progress.'
+
+  _noGame: ->
+    'Sorry brah, gotta start a new game first.'
+
+  _joinGame: (name) ->
+    return @_noGame() unless @game?
+    return @_inProgress() unless @game.state == 'idle'
+
+    player = @game.addPlayer(name)
+    "You have been added, #{name}"
+
+  _startGame: ->
+    return @_noGame() unless @game?
+    return @_inProgress() unless @game.state == 'idle'
+
+    @game.start()
+
+  _dealCard: (player) ->
+    return @_noGame() unless @game?
+    return 'The game is over, doofus.' if @game.state != 'ongoing'
+    result = @game.deal(player)
+    newPlayer = @game.step()
+
+    # a message is simply returned if no card is dealt, either because the
+    # player is out or it's not this players' turn.
+    return result unless result.card
+
+    if result.status == 'lose'
+      message = 'You totally lost.'
+    else
+      message = 'You\'re totally still in the game'
+
+    if newPlayer?
+      next = "The next player is #{newPlayer.name}" if newPlayer?
+    else
+      next = 'That\'s it, folks! Time to tally it the fuck up.'
+
+    "You got a #{result.card.stringify()}, bitch. Your score is now #{result.score} - #{message}. #{next}"
+
+  _stand: (player) ->
+    return @_noGame() unless @game?
+    return 'The game is over, doofus.' if @game.state != 'ongoing'
+    result = @game.stand(player)
+    newPlayer = @game.step()
+
+    if newPlayer?
+      next = "The next player is #{newPlayer.name}" if newPlayer?
+      "#{result} #{next}"
+    else
+      # we're done
+      @game.finishThis()
+
   _retardedEmitter: ->
     'HE\'S JAPANEEEEEESE'
-
 
   _tellJoke: ->
     @jokes[Math.floor(Math.random() * @jokes.length)]

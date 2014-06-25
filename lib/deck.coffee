@@ -40,6 +40,6 @@ class Deck
     constructor: (@suit, @rank, @value) ->
 
     stringify: ->
-      "#{rank} of #{suit}"
+      "{ #{@rank} of #{@suit} }"
 
 module.exports = Deck
