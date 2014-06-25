@@ -20,7 +20,7 @@ class Deck
         if @rule
           switch
             when @rule == 'blackjack'
-              if index >= 10 then value = 10 else value = index+2
+              if index >= 8 then value = 10 else value = index+2
         else
           value = index+1
         @cards.push new Card(suit, rank, value)
