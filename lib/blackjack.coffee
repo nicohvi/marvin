@@ -93,21 +93,24 @@ class Blackjack
       @_houseCheck()
 
     # the house stands at 17+
-    for player in candidates
-      if player.score > @house.score
-        player.state = 'win'
+    unless @house.state == 'lose'
+      for player in candidates
+        if player.score > @house.score
+          player.state = 'win'
+        else
+          player.state = 'lose'
+
+      winners = @players.filter (player) ->
+        player.state == 'win' && player.name != 'house'
+
+      console.log "WINNERS: #{util.inspect(winners)}"
+
+      if winners.length == @players.length
+        @house.state = 'lose'
+      else if winners.length == 0
+        @house.state = 'win'
       else
-        player.state = 'lose'
-
-    winners = @players.filter (player) ->
-      player.state == 'win'
-
-    if winners.length == @players.length
-      @house.state = 'lose'
-    else if winners.length == 0
-      @house.state = 'win'
-    else
-      @house.state = 'tie'
+        @house.state = 'tie'
 
     @state = 'done'
 

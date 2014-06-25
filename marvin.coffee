@@ -73,10 +73,12 @@ class Marvin
         @_dealCard(player)
       when command == 'stand'
         @_stand(player)
+      when command == 'restart'
+        @_newGame(player)
 
   _newGame: (name) ->
     if @game?
-      if @game.state == 'idle'
+      if @game.state == 'done'
         @game.restart()
         "A new game has been started by #{name}"
       else
